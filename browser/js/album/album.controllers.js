@@ -1,12 +1,12 @@
 'use strict';
 
-juke.controller('AlbumCtrl', function ($scope, $http, $rootScope, $log) {
+juke.controller('AlbumCtrl', function ($scope, AlbumFactory, $rootScope, $log, StatsFactory) {
 
   // load our initial data
-  $http.get('/api/albums/')
+  AlbumFactory.fetchAll()
   .then(function (res) { return res.data; })
   .then(function (albums) {
-    return $http.get('/api/albums/' + albums[0].id); // temp: get one
+    return AlbumFactory.fetchById(albums[0].id); // temp: get one
   })
   .then(function (res) { return res.data; })
   .then(function (album) {
@@ -15,7 +15,11 @@ juke.controller('AlbumCtrl', function ($scope, $http, $rootScope, $log) {
       song.audioUrl = '/api/songs/' + song.id + '/audio';
       song.albumIndex = i;
     });
-    $scope.album = album;
+    StatsFactory.totalTime(album)
+    .then(function(dur) {
+      album.duration = Math.round(dur/60) + " minutes";
+      $scope.album = album;
+    });
   })
   .catch($log.error); // $log service can be turned on and off; also, pre-bound
 
@@ -56,3 +60,20 @@ juke.controller('AlbumCtrl', function ($scope, $http, $rootScope, $log) {
   function prev () { skip(-1); };
 
 });
+
+juke.controller('AllAlbumsCtrl', function($scope, AlbumFactory, StatsFactory, $log, $rootScope) {
+  AlbumFactory.fetchAll()
+  .then(function(res) {
+    return res.data;
+  })
+  .then(function(albums) {
+    albums.forEach(function(album) {
+      album.imageUrl = '/api/albums/' + album.id + '/image';
+      AlbumFactory.fetchById(album.id)
+      .then(function(res) {
+        album.numSongs = res.data.songs.length;
+      });
+    });
+    $scope.albums = albums;
+  })
+})

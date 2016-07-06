@@ -8,6 +8,7 @@
     <script src="/angular/angular.js" defer></script>
     <script src="/js/module.js" defer></script>
     <script src="/js/album/album.controllers.js" defer></script>
+    <script src="js/album/album.factory.js" defer></script>
     <script src="/js/player/player.controller.js" defer></script>
     <script src="/js/player/player.factory.js" defer></script>
   </head>
@@ -26,9 +27,10 @@
       </div>
 
       <div class="col-xs-10">
-        <div class="album" ng-controller="AlbumCtrl">
+        <div class="album" ng-controller="AlbumCtrl" ng-show="true">
           <p>
             <h3>{{ album.name }}</h3>
+            <h5>{{ album.duration }}</h5>
             <img ng-src="{{ album.imageUrl }}" class="img-thumbnail">
           </p>
           <table class='table'>
@@ -53,6 +55,22 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div ng-show="false" ng-controller="AllAlbumsCtrl">
+          <h3>Albums</h3>
+          <div class="row">
+            <div class="col-xs-4" ng-repeat="album in albums">
+              <a class="thumbnail" href="#">
+                <img ng-src="{{ album.imageUrl }}">
+                <div class="caption">
+                  <h5>
+                    <span>{{ album.name }}</span>
+                  </h5>
+                  <small>{{ album.numSongs }} Songs</small>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
