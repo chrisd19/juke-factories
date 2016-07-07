@@ -43,5 +43,8 @@ juke.factory('PlayerFactory', function(){
     factoryObj.getProgress = function () {
       return audio.currentTime / audio.duration || 0;
     }
+    factoryObj.seek = function(decimal) {
+      audio.currentTime = audio.duration * decimal;
+    }
     return factoryObj;
 });
